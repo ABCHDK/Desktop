@@ -1,0 +1,9 @@
+import math
+sum = 0
+n = [ 1,2]
+for i in n:
+    x = math.factorial(i)
+    y = 1/x
+    while y>0:
+        sum += y
+print(sum)

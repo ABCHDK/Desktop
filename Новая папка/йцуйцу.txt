@@ -1,0 +1,109 @@
+using System;
+using System.Collections.Generic;
+using System.ComponentModel;
+using System.Data;
+using System.Drawing;
+using System.Linq;
+using System.Text;
+using System.Threading.Tasks;
+using System.Windows.Forms;
+using System.Data.SqlClient;
+namespace Avto
+{
+    public partial class Form2 : Form
+    {
+        private SqlConnection sqlConnection = null;
+
+        private SqlCommandBuilder sqlBuilder = null;
+
+        private SqlDataAdapter sqlDataAdapter = null;
+
+        private DataSet dataSet = null;
+        public Form2()
+        {
+            InitializeComponent();
+        }
+
+        private void Form2_Load(object sender, EventArgs e)
+        {
+            sqlConnection = new SqlConnection(@"Data Source=PC223-9;Initial Catalog=avtosalon;Integrated Security=True");
+            sqlConnection.Open();
+            LoadData();
+        }
+        private void LoadData()
+        {
+            
+            sqlDataAdapter = new SqlDataAdapter("SELECT * FROM Avto", sqlConnection);
+            sqlBuilder = new SqlCommandBuilder(sqlDataAdapter);
+            
+            sqlBuilder.GetInsertCommand();
+            sqlBuilder.GetUpdateCommand();
+            sqlBuilder.GetDeleteCommand();
+
+            DataTable table = new DataTable();
+
+            dataSet = new DataSet();
+
+            sqlDataAdapter.Fill(dataSet, "Avto");
+
+            dataGridView1.DataSource = dataSet.Tables["Avto"];
+
+        }
+
+        private void dataGridView1_CellContentClick(object sender, DataGridViewCellEventArgs e)
+        {
+
+        }
+
+        private void dataGridView1_CellContentClick_1(object sender, DataGridViewCellEventArgs e)
+        {
+
+
+        }
+
+        private void ReloadData()
+        {
+            try
+            {
+                dataSet.Tables["Avto"].Clear();
+
+                sqlDataAdapter.Fill(dataSet, "Avto");
+
+                dataGridView1.DataSource = dataSet.Tables["Avto"];
+
+            }
+            catch (Exception ex)
+            {
+                MessageBox.Show(ex.Message, "Ошибка!", MessageBoxButtons.OK, MessageBoxIcon.Error);
+            }
+        }
+
+        private void button1_Click(object sender, EventArgs e)
+        {
+            
+           DataRow row = dataSet.Tables["Avto"].NewRow();
+
+             row["Model"] = textBox1.Text;
+             row["Komplektacia"] = textBox2.Text;
+             row["Xarakterictika"] = textBox3.Text;
+             row["Cvet"] = textBox4.Text;
+             row["Cena"] = textBox5.Text;
+
+           dataSet.Tables["Avto"].Rows.Add(row);
+
+           sqlDataAdapter.Update(dataSet, "Avto");
+           ReloadData();
+
+             textBox1.Text = "";
+             textBox2.Text = "";
+             textBox3.Text = "";
+             textBox4.Text = "";
+             textBox5.Text = "";
+            
+        }
+    }
+}
+
+_______________________________________________________________________________________________________________________________________________________________
+private void таблицыToolStripMenuItem_Click(object sender, EventArgs e)
+_________________________________________________________________________________
